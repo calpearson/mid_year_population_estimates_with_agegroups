@@ -11,7 +11,7 @@
 ## ---------------------------
 ##
 ## Overview: Data is taken from the following https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/estimatesofthepopulationforenglandandwales
-##   
+##   https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationestimatesforenglandandwales/previousreleases?page=1
 ##
 ## ---------------------------
 
@@ -190,5 +190,23 @@ age_groups_ind_2024 <- data.frame(
     Population = as.numeric(gsub(",", "", Population)),
     All_ages = as.numeric(gsub(",", "", All_ages))
   )
+
+age_groups_ind_2023 <- read_excel("inputs/ons_age_sex_midyear.xlsx", 
+                                  sheet = "MYE 2023") %>%
+   mutate(temp = left(`LAD code`,1),
+          country = ifelse(temp == "E","England","Wales"),
+          `0` = `Aged under 1 year`,
+          `90` = `Aged 90 years and over`) %>%
+  select(-`LAD code`,-`LAD name`,-temp,-`Aged under 1 year`,-`Aged 90 years and over`,-sex,-`All ages`) %>%
+  pivot_longer(
+    cols = -country,              # keep country as id
+    names_to = "Age",             # new column for age
+    values_to = "Population"      # new column for population
+  )
+
+
+
+
+
 
 
